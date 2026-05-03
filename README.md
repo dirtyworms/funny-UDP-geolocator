@@ -1,44 +1,98 @@
-funny-UDP-geolocator
-Setup
+# funny-UDP-geolocator
 
-Before running, install dependencies:
+A lightweight packet inspection tool that uses `tshark` and GeoLite2 databases to map observed IP addresses from UDP/TCP traffic to approximate geographic locations.
 
+> ⚠️ This tool is intended for educational and networking experimentation purposes only.
+
+---
+
+## 📦 Setup
+
+### Install dependencies
+
+Run the following before using the script:
+
+```bash
 pip install geoip2
+```
+### Install Wireshark
 
-Also install Wireshark, since this tool relies on tshark.
+This tool depends on tshark, which is included with Wireshark.
 
-Required Files
+Download:
+https://www.wireshark.org/
 
-You must place the following MaxMind databases in your user folder:
+### 📁 Required Files
 
+You must download and place the following MaxMind databases in your user directory:
+
+```bash
 C:\Users\yourname\
-    ├── GeoLite2-City.mmdb
-    └── GeoLite2-ASN.mmdb
+├── GeoLite2-City.mmdb
+└── GeoLite2-ASN.mmdb
+```
+You can obtain these from MaxMind:
+https://dev.maxmind.com/geoip/geolite2-free-geolocation-data
 
-You can download them from MaxMind’s website.
+Without these files, the program will not function.
+### 🧠 What This Tool Does
 
-Without these files, the program will not work.
+This script:
 
-What it does
+Captures network packets using tshark
+Extracts source IP addresses from UDP/TCP traffic
+Filters out private and noise IPs
+Uses GeoLite2 to resolve approximate location data
+Filters known infrastructure providers (CDNs, cloud services)
+## ⚠️ Important Notes
 
-This script attempts to identify the source IP addresses of UDP/TCP packets captured via tshark, and then maps them to a geographic location using the GeoLite2 database.
+Many detected IP addresses will belong to infrastructure providers such as:
 
-Important Notes
-Many detected IPs will belong to infrastructure providers such as Google Cloudflare Microsoft and Amazon
-These are not real user locations, but server/CDN endpoints used by websites and apps.
+- Google
+- Cloudflare
+- Microsoft
+- Amazon
+- Akamai
+- Apple
 
-Do not assume these IPs represent actual people, you will often be looking at data center traffic, not user devices. To know whether an IP address belongs to someone, keep in mind that server/CDN endpoints usually only appear briefly, usually interrupted by other server/CDN endpoints, while a real source IP will be repeatedly shown in the terminal so long as it is communicating with you.
+These are not individual users, but servers, CDNs, or backend services.
 
-Troubleshooting
+### 🚫 Do NOT assume:
+That an IP address represents a real person’s location
+That geographic results are precise or user-level accurate
+### ✔️ What you are actually seeing:
+- CDN traffic
+- API requests
+- Server-to-server communication
+- Load-balanced routing infrastructure
+## 🔍 How to Interpret Results
+
+To better understand output:
+
+- Short-lived IPs → usually CDN/server infrastructure
+- Repeated IPs over time → more likely active communication source
+- Private IPs (192.168.x.x, 10.x.x.x) → local network traffic, ignored
+## 🛠️ Troubleshooting
 
 If the program does not work:
 
-Verify you are using the same Python interpreter where geoip2 is installed
-(this is shown at the top of the script if you print sys.executable)
-Ensure tshark is installed and accessible
-Confirm the .mmdb files are in the correct directory
-Run the script from a terminal to see errors (not by double-clicking)
+### 1. Python interpreter mismatch
 
-Disclaimer
+Ensure you are using the same Python environment where geoip2 is installed. The program prints the version at the top when it launches. Cross reference this with the version of python where you ran the pip command.
 
-This project is intended for educational and networking experimentation purposes only. I do not endorse or encourage any misuse of network data or attempts to identify individuals.
+### 2. Missing dependencies
+
+Verify installation:
+
+pip install geoip2
+
+### 3. tshark not working
+
+Ensure Wireshark is installed
+Verify tshark is available in PATH
+Run as administrator if needed
+
+### 4. Database files missing
+
+Confirm .mmdb files are located in C:\Users\yourname\
+
