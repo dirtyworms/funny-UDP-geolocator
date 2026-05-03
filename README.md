@@ -1,7 +1,44 @@
-# funny-UDP-geolocator
-run "pip install geoip2" in the command prompt beforehand, and download wireshark.
+funny-UDP-geolocator
+Setup
 
-Locates the source IP of UDP packets. Use to fuck around on omegle and whatnot.
-You MUST have a copy of GeoLite2-City and GeoLite2-ASN in your user folder (C:\Users\yourname) which you can get from the maxmind website or else it WILL not work. Most packets you see from the united states and other places are most likely server packets communicating from your browser like google and cloudflare, so dont go telling someone they live in California when it's just Google servers because you'll look like a complete moron.
-If the program does not work, verify that you're using the version of python which you downloaded geoip2 on, (viewable at the top of the program).
-I do not endorse criminal activity, this is for educational purposes only
+Before running, install dependencies:
+
+pip install geoip2
+
+Also install Wireshark, since this tool relies on tshark.
+
+Required Files
+
+You must place the following MaxMind databases in your user folder:
+
+C:\Users\yourname\
+    ├── GeoLite2-City.mmdb
+    └── GeoLite2-ASN.mmdb
+
+You can download them from MaxMind’s website.
+
+Without these files, the program will not work.
+
+What it does
+
+This script attempts to identify the source IP addresses of UDP/TCP packets captured via tshark, and then maps them to a geographic location using the GeoLite2 database.
+
+Important Notes
+Many detected IPs will belong to infrastructure providers such as Google Cloudflare Microsoft and Amazon
+These are not real user locations, but server/CDN endpoints used by websites and apps.
+
+Do not assume these IPs represent actual people, you will often be looking at data center traffic, not user devices. To know whether an IP address belongs to someone, keep in mind that server/CDN endpoints usually only appear briefly, usually interrupted by other server/CDN endpoints, while a real source IP will be repeatedly shown in the terminal so long as it is communicating with you.
+
+Troubleshooting
+
+If the program does not work:
+
+Verify you are using the same Python interpreter where geoip2 is installed
+(this is shown at the top of the script if you print sys.executable)
+Ensure tshark is installed and accessible
+Confirm the .mmdb files are in the correct directory
+Run the script from a terminal to see errors (not by double-clicking)
+
+Disclaimer
+
+This project is intended for educational and networking experimentation purposes only. I do not endorse or encourage any misuse of network data or attempts to identify individuals.
